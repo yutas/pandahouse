@@ -63,7 +63,7 @@ def to_dataframe(lines, **kwargs):
 
     dtypes, parse_dates, converters = {}, [], {}
     for name, chtype in zip(names, types):
-        dtype = CH2PD[chtype]
+        dtype = 'object' if chtype.startswith('FixedString') else CH2PD[chtype]
         if dtype == 'object':
             converters[name] = decode_escapes
         elif dtype.startswith('datetime'):
@@ -73,7 +73,7 @@ def to_dataframe(lines, **kwargs):
 
     return pd.read_table(lines, header=None, names=names, dtype=dtypes,
                          parse_dates=parse_dates, converters=converters,
-                         na_values=set(), keep_default_na=False, **kwargs)
+                         na_values=set("nan"), keep_default_na=True, **kwargs)
 
 
 def partition(df, chunksize=1000):
